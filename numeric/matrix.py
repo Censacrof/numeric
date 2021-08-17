@@ -4,9 +4,17 @@ from typing import List
 class Matrix:
     def __init__(self, elements: list[complex], shape: tuple[int, int]):
         n_rows, n_cols = shape
-        assert(n_rows > 0)
-        assert(n_cols > 0)
-        assert(len(elements) == n_rows * n_cols)
+        if n_rows <= 0 or n_cols <= 0:
+            raise ValueError('Invalid shape {}'.format(shape))
+        
+        if len(elements) != n_rows * n_cols:
+            raise ValueError('Inconsistent shape {}: {} * {} = {} but the number of elements is {}'.format(
+                shape,
+                n_rows,
+                n_cols,
+                n_rows * n_cols,
+                len(elements)
+            ))
 
         self._elements = elements
         self._shape = shape
@@ -15,14 +23,18 @@ class Matrix:
     @classmethod
     def fromRows(cls, rows: list[list[complex]]) -> Matrix:
         n_rows = len(rows)
-        assert(n_rows >= 1)
+        if n_rows < 1:
+            raise ValueError('Number of rows must be greater than 1')
 
         n_cols = len(rows[0])
-        assert(n_cols >= 1)
+        if n_cols < 1:
+            raise ValueError('Number of cols must be greater than 1')
 
         elements = []
         for row in rows:
-            assert(len(row) == n_cols)
+            if len(row) != n_cols:
+                raise ValueError('Number of elements must be the same in each row')
+
             elements += row
 
         shape = (n_rows, n_cols)
@@ -30,14 +42,17 @@ class Matrix:
     
     @classmethod
     def makeVector(cls, elements: list[complex]) -> Matrix:
-        assert(len(elements) > 0)
+        if len(elements) == 0:
+            raise ValueError('Number of elements must be greater than 0')
         return Matrix(elements, (len(elements), 1))
     
 
-    def at(self, row, col) -> complex:
+    def at(self, row: int, col: int) -> complex:
         n_rows, n_cols = self._shape
-        assert(row >= 0 and row < n_rows)
-        assert(col >= 0 and col < n_cols)
+        if row < 0 or row >= n_rows:
+            raise IndexError('Row index {} out of bound'.format(row))
+        if col < 0 or col >= n_cols:
+            raise IndexError('Col index {} out of bound'.format(col))
 
         index = row * n_cols + col
         return self._elements[index]
@@ -76,7 +91,11 @@ class Matrix:
 
 
     def __add__(self, other: Matrix) -> Matrix:
-        assert(self._shape == other._shape)
+        if self._shape != other._shape:
+            raise ValueError('Incompatible shapes {} and {}: they must be the same'.format(
+                self._shape,
+                other._shape
+            ))
         elements = [
             self._elements[i] + other._elements[i]
             for i in range(len(self._elements))
@@ -84,7 +103,11 @@ class Matrix:
         return Matrix(elements, self._shape)
     
     def __sub__(self, other: Matrix) -> Matrix:
-        assert(self._shape == other._shape)
+        if self._shape != other._shape:
+            raise ValueError('Incompatible shapes {} and {}: they must be the same'.format(
+                self._shape,
+                other._shape
+            ))
         elements = [
             self._elements[i] - other._elements[i]
             for i in range(len(self._elements))
@@ -104,7 +127,15 @@ class Matrix:
     def __mul__(self, other: Matrix) -> Matrix:
         n_rows_s, n_cols_s = self._shape
         n_rows_o, n_cols_o = other._shape
-        assert(n_cols_s == n_rows_o)
+        if n_cols_s != n_rows_o:
+            raise ValueError((
+                'Incompatible shapes {} and {}: the number of cols '
+                'of the first matrix must match the number of rows '
+                'of the the second matrix'
+            ).format(
+                self._shape,
+                other._shape
+            ))
 
         n_rows = n_rows_s
         n_cols = n_cols_o
