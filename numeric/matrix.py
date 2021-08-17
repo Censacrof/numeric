@@ -2,7 +2,27 @@ from __future__ import annotations
 from typing import List
 
 class Matrix:
-    def __init__(self, elements: list[complex], shape: tuple[int, int]):
+    """
+    Creates a :class:`Matrix` with given elements and shape.
+
+    Args:
+        elements: a list containing the elements of the matrix.
+        shape: (n_rows, n_cols) tuple formed by the number of rows and cols of the matrix.
+    
+    Returns:
+        The newly created :class:`Matrix`.
+    
+    Raises:
+        ValueError: 
+            if n_rows or n_cols is less than 1
+            or if n_rows*n_cols doesn't match the number of elements.
+
+    .. automethod:: __add__
+    .. automethod:: __sub__
+    .. automethod:: __mul__
+    """
+
+    def __init__(self, elements: list[complex], shape: tuple[int, int]) -> Matrix:
         n_rows, n_cols = shape
         if n_rows <= 0 or n_cols <= 0:
             raise ValueError('Invalid shape {}'.format(shape))
@@ -22,13 +42,27 @@ class Matrix:
 
     @classmethod
     def fromRows(cls, rows: list[list[complex]]) -> Matrix:
+        """
+        Creates a :class:`Matrix` from a list of rows.
+
+        Args:
+            rows: a list rows. Each row is a list of :class:`complex` 
+                with the same number of elements.
+        
+        Returns:
+            The newly created :class:`Matrix`
+        
+        Raises:
+            ValueError: if number of rows or cols is less than 1
+                or if the number of elements is not the same in each row.
+        """
         n_rows = len(rows)
         if n_rows < 1:
-            raise ValueError('Number of rows must be greater than 1')
+            raise ValueError('Number of rows must be at least 1')
 
         n_cols = len(rows[0])
         if n_cols < 1:
-            raise ValueError('Number of cols must be greater than 1')
+            raise ValueError('Number of cols must be at least 1')
 
         elements = []
         for row in rows:
@@ -42,12 +76,37 @@ class Matrix:
     
     @classmethod
     def makeVector(cls, elements: list[complex]) -> Matrix:
+        """
+        Creates a :class:`Matrix` that is a column vector of given elements.
+
+        Args:
+            elements: a list containg the elements of the vector.
+        
+        Returns:
+            The newly created :class:`Matrix` representig the column vector.
+        
+        Raises:
+            ValueError: if the number of elements is 0.
+        """
         if len(elements) == 0:
             raise ValueError('Number of elements must be greater than 0')
         return Matrix(elements, (len(elements), 1))
     
 
     def at(self, row: int, col: int) -> complex:
+        """
+        Returns the element of position (row, col).
+
+        Args:
+            row: index of the row.
+            col: index of the column.
+        
+        Returns:
+            The element of position (row, col).
+        
+        Raises:
+            IndexError: if row or col is not a valid index.
+        """
         n_rows, n_cols = self._shape
         if row < 0 or row >= n_rows:
             raise IndexError('Row index {} out of bound'.format(row))
@@ -58,6 +117,10 @@ class Matrix:
         return self._elements[index]
 
     def rows(self) -> list[list[complex]]:
+        """
+        Returns:
+            The list of rows that makes up the matrix.
+        """
         n_rows, n_cols = self._shape
         rows = []
         for row in range(n_rows):
@@ -67,6 +130,10 @@ class Matrix:
         return rows
     
     def cols(self) -> list[list[complex]]:
+        """
+        Returns:
+            The list of columns that makes up the matrix.
+        """
         n_rows, n_cols = self._shape
         cols = []
         for col in range(n_cols):
@@ -76,21 +143,46 @@ class Matrix:
         return cols
 
     def T(self) -> Matrix:
+        """
+        Returns:
+            The transpose of the matrix.
+        """
         return Matrix.fromRows(self.cols())
     
     def H(self) -> Matrix:
+        """
+        Returns:
+            The conjugate transpose of the matrix.
+        """
         M = Matrix.fromRows(self.cols())
         for i in range(len(M._elements)):
             M._elements[i] = complex(M._elements[i]).conjugate()
         return M
 
     def scaled(self, scale: complex) -> Matrix:
+        """
+        Args:
+            scale: A complex scalar.
+        
+        Returns:
+            A new :class:`Matrix` whose elements are all the elements 
+            of the original matrix multiplied by a scalar.
+        """
         elements = [scale * e for e in self._elements]
         shape = self._shape
         return Matrix(elements, shape)
 
 
     def __add__(self, other: Matrix) -> Matrix:
+        """
+        Defines the behaviour of the '+' operator .
+
+        Returns:
+            A new :class:`Matrix` wich is the sum of self and other.
+        
+        Raises:
+            ValueError: if the shapes of self and other are not the same.
+        """
         if self._shape != other._shape:
             raise ValueError('Incompatible shapes {} and {}: they must be the same'.format(
                 self._shape,
