@@ -25,6 +25,13 @@ class TestMatrix(unittest.TestCase):
         self.assertEqual(x._shape, (3, 1))
         self.assertEqual(x._elements, elements)
     
+    def test_diag(self):
+        with self.assertRaises(ValueError):
+            Matrix.diag([])
+        A = Matrix.diag([1, 2, 3])
+        self.assertEqual(A._elements, [1, 0, 0, 0, 2, 0, 0, 0, 3])
+        self.assertEqual(A._shape, (3, 3))
+    
     def test_at(self):
         A = Matrix.fromRows([[1, 2, 3], [4, 5, 6], [7, 8, 9], [10, 11, 12]])
         with self.assertRaises(IndexError):

@@ -92,6 +92,33 @@ class Matrix:
             raise ValueError('Number of elements must be greater than 0')
         return Matrix(elements, (len(elements), 1))
 
+    @classmethod
+    def diag(cls, diag_elements: list[complex]) -> Matrix:
+        """
+        Creates a diagonal :class:`Matrix`:
+        a square matrix whose elements that are not on the main diagonal are zeroes.
+
+        Args:
+            diag_elements: the elements on the main diagonal.
+
+        Returns:
+            The newly created diagonal matrix.
+
+        Raises:
+            ValueError: if diag_elements is an empty list.
+        """
+        if len(diag_elements) == 0:
+            raise ValueError("diag_elements length must be at least 1")
+        
+        n = len(diag_elements)
+        elements = [
+            0 if i != j else diag_elements[i]
+            for i in range(n)
+            for j in range(n)
+        ]
+        shape = (n, n)
+        return Matrix(elements, shape)
+
     def elements(self) -> list[complex]:
         """
         Returns:
