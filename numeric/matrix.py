@@ -91,7 +91,13 @@ class Matrix:
         if len(elements) == 0:
             raise ValueError('Number of elements must be greater than 0')
         return Matrix(elements, (len(elements), 1))
-    
+
+    def shape(self) -> tuple[int, int]:
+        """
+        Returns:
+            A tuple like (n_rows, n_cols) representing the shape of the matrix
+        """
+        return self._shape
 
     def at(self, row: int, col: int) -> complex:
         """
