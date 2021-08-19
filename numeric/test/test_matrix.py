@@ -40,17 +40,39 @@ class TestMatrix(unittest.TestCase):
         I = Matrix.identity(3)
         self.assertEqual(I._elements, [1, 0, 0, 0, 1, 0, 0, 0, 1])
     
-    def test_at(self):
+    def test_get_at(self):
         A = Matrix.fromRows([[1, 2, 3], [4, 5, 6], [7, 8, 9], [10, 11, 12]])
         with self.assertRaises(IndexError):
-            A.at(-1, 2)
+            A.get_at(-1, 2)
         with self.assertRaises(IndexError):
-            A.at(4, 1)        
+            A.get_at(4, 1)        
         with self.assertRaises(IndexError):
-            A.at(1, -2)
+            A.get_at(1, -2)
         with self.assertRaises(IndexError):
-            A.at(4, 3)
-        self.assertEqual(A.at(1, 2), 6)
+            A.get_at(4, 3)
+        self.assertEqual(A.get_at(1, 2), 6)
+    
+    def test_set_at(self):
+        A = Matrix.fromRows([[1, 2, 3], [4, 5, 6], [7, 8, 9], [10, 11, 12]])
+        with self.assertRaises(IndexError):
+            A.set_at(-1, 2, 42)
+        with self.assertRaises(IndexError):
+            A.set_at(4, 1, 42)        
+        with self.assertRaises(IndexError):
+            A.set_at(1, -2, 42)
+        with self.assertRaises(IndexError):
+            A.set_at(4, 3, 42)
+        A.set_at(1, 2, 0)
+        self.assertEqual(A.get_at(1, 2), 0)
+
+    def test___getitem__(self):
+        A = Matrix.fromRows([[1, 2, 3], [4, 5, 6], [7, 8, 9], [10, 11, 12]])
+        self.assertEqual(A[1, 2], A.get_at(1, 2))
+    
+    def test___setitem__(self):
+        A = Matrix.fromRows([[1, 2, 3], [4, 5, 6], [7, 8, 9], [10, 11, 12]])
+        A[1, 2] = 0
+        self.assertEqual(A.get_at(1, 2), 0)
 
     def test_rows(self):
         rows = [[1, 2, 3], [4, 5, 6], [7, 8, 9], [10, 11, 12]]

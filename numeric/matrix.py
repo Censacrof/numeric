@@ -149,7 +149,7 @@ class Matrix:
         """
         return self._shape
 
-    def at(self, row: int, col: int) -> complex:
+    def get_at(self, row: int, col: int) -> complex:
         """
         Returns the element of position (row, col).
 
@@ -171,6 +171,28 @@ class Matrix:
 
         index = row * n_cols + col
         return self._elements[index]
+    
+    def set_at(self, row: int, col: int, val: complex):
+        """
+        Sets the value of element of position (row, col) to val.
+
+        Args:
+            row: index of the row.
+            col: index of the column.
+            val: value to be set.
+        
+        Raises:
+            IndexError: if row or col is not a valid index. 
+        """
+        n_rows, n_cols = self._shape
+        if row < 0 or row >= n_rows:
+            raise IndexError('Row index {} out of bound'.format(row))
+        if col < 0 or col >= n_cols:
+            raise IndexError('Col index {} out of bound'.format(col))
+
+        index = row * n_cols + col
+        self._elements[index] = val
+        pass
 
     def rows(self) -> list[list[complex]]:
         """
@@ -228,6 +250,13 @@ class Matrix:
         shape = self._shape
         return Matrix(elements, shape)
 
+    def __getitem__(self, pos: tuple[int, int]) -> complex:
+        row, col = pos
+        return self.get_at(row, col)
+    
+    def __setitem__(self, pos: tuple[int, int], val: complex):
+        row, col = pos
+        self.set_at(row, col, val)
 
     def __add__(self, other: Matrix) -> Matrix:
         """
