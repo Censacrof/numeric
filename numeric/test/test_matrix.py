@@ -32,6 +32,14 @@ class TestMatrix(unittest.TestCase):
         self.assertEqual(A._elements, [1, 0, 0, 0, 2, 0, 0, 0, 3])
         self.assertEqual(A._shape, (3, 3))
     
+    def test_identity(self):
+        with self.assertRaises(ValueError):
+            Matrix.identity(0)
+        with self.assertRaises(ValueError):
+            Matrix.identity(-1)
+        I = Matrix.identity(3)
+        self.assertEqual(I._elements, [1, 0, 0, 0, 1, 0, 0, 0, 1])
+    
     def test_at(self):
         A = Matrix.fromRows([[1, 2, 3], [4, 5, 6], [7, 8, 9], [10, 11, 12]])
         with self.assertRaises(IndexError):

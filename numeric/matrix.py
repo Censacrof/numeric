@@ -108,7 +108,7 @@ class Matrix:
             ValueError: if diag_elements is an empty list.
         """
         if len(diag_elements) == 0:
-            raise ValueError("diag_elements length must be at least 1")
+            raise ValueError('diag_elements length must be at least 1')
         
         n = len(diag_elements)
         elements = [
@@ -118,6 +118,19 @@ class Matrix:
         ]
         shape = (n, n)
         return Matrix(elements, shape)
+    
+    @classmethod
+    def identity(cls, n: int) -> Matrix:
+        """
+        Returns:
+            The identity matrix of shape (n, n).
+        
+        Raises:
+            ValueError: if n is less than 1
+        """
+        if n < 1:
+            raise ValueError('n must be at least 1')
+        return Matrix.diag([1 for i in range(n)])
 
     def elements(self) -> list[complex]:
         """
