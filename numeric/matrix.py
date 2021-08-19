@@ -92,10 +92,17 @@ class Matrix:
             raise ValueError('Number of elements must be greater than 0')
         return Matrix(elements, (len(elements), 1))
 
+    def elements(self) -> list[complex]:
+        """
+        Returns:
+            A list containing all the elements of the matrix.
+        """
+        return self._elements
+
     def shape(self) -> tuple[int, int]:
         """
         Returns:
-            A tuple like (n_rows, n_cols) representing the shape of the matrix
+            A tuple like (n_rows, n_cols) representing the shape of the matrix.
         """
         return self._shape
 
