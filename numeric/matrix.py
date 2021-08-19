@@ -122,6 +122,9 @@ class Matrix:
     @classmethod
     def identity(cls, n: int) -> Matrix:
         """
+        Args:
+            n: the order of the identity matrix.
+
         Returns:
             The identity matrix of shape (n, n).
         
